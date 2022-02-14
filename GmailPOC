@@ -1,0 +1,121 @@
+package email;
+import java.awt.AWTException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.*;
+
+
+
+public class GmailPoc {
+
+	WebDriver driver;
+
+	@BeforeClass
+	public void login()
+	{
+		System.setProperty("webdriver.chrome.driver","C://Users//Surabhi//Downloads//chromedriver.exe");
+		driver = new ChromeDriver();
+		driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
+		driver.get("https://www.gmail.com");
+		// email address
+		driver.findElement(By.xpath("//input[@id='identifierId']")).sendKeys("tyagisurabhi05@gmail.com");
+		driver.findElement(By.xpath("//div[@id='identifierNext']")).click();
+		//password
+		WebElement passwordButton = driver.findElement(By.xpath("//input[@name='password']"));
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+		wait.until(ExpectedConditions.elementToBeClickable(passwordButton));
+		passwordButton.sendKeys("Tester@123");
+		driver.findElement(By.xpath("//div[@id='passwordNext']")).click();
+	}
+
+	@Test(priority = 3)
+	//Click on compose button
+
+
+	public void composeMail() throws AWTException
+	{
+
+		driver.findElement(By.xpath("//div[text()='Compose']")).click();
+		driver.findElement(By.xpath("//textarea[@name='to']")).sendKeys("qasagar11@gmail.com");
+
+		driver.findElement(By.xpath("//input[@name='subjectbox']")).sendKeys("Selenium script");
+		driver.findElement(By.id(":b4")).sendKeys("Selenium script to send mail");
+		driver.findElement(By.xpath("//*[@id=':bh']")).click();
+		RobotEmailAttachment.uploadFile();
+		driver.findElement(By.xpath("//div[text()='Send']")).click();
+		//driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+		//wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[text()='Send']")));
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[contains(text(),'Message sent.')]")));
+
+	}
+
+
+	@Test (priority = 0)
+	public void readUnReadMail()
+	{
+
+
+		List<WebElement> unreademail = driver.findElements(By.className("zE"));
+		System.out.println("Total No. of Unread Mails: " + unreademail.size());
+
+		List<WebElement> reademail = driver.findElements(By.cssSelector(".zA.yO"));
+		System.out.println("Total No. of read Mails: " + reademail.size());
+	}
+
+
+	@Test (priority = 1)
+	public void leftPanel()
+	{
+
+		List<WebElement> leftpanel_labels = driver.findElements(By.xpath("//div[@role = 'navigation']//a"));
+		System.out.println("Return size of lables in left panel: " + leftpanel_labels.size());
+
+		for(int i=0;i<leftpanel_labels.size();i++){
+			String leftpanel =leftpanel_labels.get(i).getText();
+			System.out.println("Return all lables of left panel: " + leftpanel);
+
+		}
+	}
+
+
+	@Test (priority = 2)
+	public void inboxAttachment()
+	{
+
+		List<WebElement> inboxattachment = driver.findElements(By.xpath("//span[contains(.,'Attachment:')]//following-sibling::img"));
+		// Display count of inbox attachment
+		System.out.println("Test attachment is present: " + inboxattachment.size());  
+
+		List<WebElement> mailbody = driver.findElements(By.xpath("//span[@class= 'y2']"));
+		// Display count of mail body
+		System.out.println("Test body is present: " + mailbody.size()); 
+
+		for(int i=0;i<mailbody.size();i++){
+			String mailtext =mailbody.get(i).getText();
+			System.out.println("Return mail text of attachment : " + mailtext);
+		}
+	}
+
+	@AfterClass
+	public void closeBrowser() {
+
+		driver.quit();
+	}
+}
+
+
+
+

@@ -1,0 +1,38 @@
+package email;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.io.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.Toolkit;
+
+
+public class RobotEmailAttachment {
+	
+
+	public static void uploadFile() throws AWTException {
+		// TODO Auto-generated method stub
+		
+		StringSelection ee = new StringSelection("C:\\Users\\Surabhi\\Downloads\\test.txt");
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ee,null);
+		Robot robot = new Robot();
+		robot.delay(1000);
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_V);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+		robot.keyRelease(KeyEvent.VK_V);
+		//robot.delay(3000);
+		robot.keyPress(KeyEvent.VK_ENTER);
+		robot.keyRelease(KeyEvent.VK_ENTER);
+		
+	}
+}
+
+		
+	
+
+
